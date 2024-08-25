@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import { AppProps } from "next/app";
-import { Textarea } from "@nextui-org/react";
+import { Button, Textarea } from "@nextui-org/react";
 import { Transcript, TranscriptEntry, BackendComments } from "../../types";
 import transcriptData from "../../transcripts.json";
+import FeedbackComponent from "../feedback/Feedback";
 // import AddComment from "../components/AddComment";
 
 
@@ -116,6 +117,7 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
 
   function handleMouseUp(e: React.MouseEvent<HTMLSpanElement>) {
     if (window.getSelection()?.toString()) {
+      console.log("selection", window.getSelection()?.toString())
       handleWordClick(e); 
     }
   }
@@ -258,54 +260,147 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
     }
   };
 
+  
+  // const handleSummarizeFeedback = () => {
+  //   console.log("backend comments", JSON.stringify(backendComments));
+  //   console.log("transcript entries", JSON.stringify(transcript));
 
+  // };
+  const [preparedMessages, setPreparedMessages] = useState<{
+    role: string;
+    content: string;
+  }[]>([]);
+
+  const [renderFeedback, setRenderFeedback] = useState<boolean>(false);
+
+  const handleSummarizeFeedback = async () => {
+    try {
+      // Function to convert the spanId to the word index in the transcript
+      const getWordFromSpanId = (spanId: string, transcript: { time: string; speaker: string; text: string }[]) => {
+        const [entryIndex, wordIndex] = spanId.split('#').map(Number);
+        if (transcript[entryIndex] && transcript[entryIndex].text) {
+          const words = transcript[entryIndex].text.split(' ');
+          return words[wordIndex] || '';
+        }
+        return '';
+      };
+  
+      // Format messages for the API
+      const messages = [];
+  
+      // Add conversation messages to the list
+      for (const entry of transcript) {
+        messages.push({
+          role: 'user',
+          content: `${entry.time} ${entry.speaker}: ${entry.text}`,
+        });
+  
+        // Check if there's feedback for this message
+        const feedbacksForEntry = backendComments.filter((comment) => {
+          const [feedbackEntryIndex] = comment.SpanId.split('#').map(Number);
+          return feedbackEntryIndex === transcript.indexOf(entry);
+        });
+  
+        // Add feedbacks for the current entry
+        feedbacksForEntry.forEach((feedback) => {
+          messages.push({
+            role: 'user',
+            content: `Feedback on "${getWordFromSpanId(feedback.SpanId, transcript)}": ${feedback.commentText}`,
+          });
+        });
+      }
+      
+      setPreparedMessages(messages);
+      setRenderFeedback(true);
+      // Send POST request to OpenAI API
+      // const response = await fetch('/api/gpt', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ messages }),
+      // });
+  
+      // if (!response.ok) {
+      //   throw new Error('Failed to summarize feedback');
+      // }
+  
+      // const result = await response.text();
+      // console.log('Summary:', result);
+  
+      // Handle the result as needed, e.g., update the UI or store the summary
+    } catch (error) {
+      console.error('Error summarizing feedback:', error);
+    }
+  };
+  
+  
+  
 
   return (
-    <div className="comments-class bg-gray-800 p-4 rounded-lg shadow-md flex items-center justify-center max-h-screen overflow-hidden" style={{ height: '100vh', overflow: 'auto' }}>
-      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 justify-items-center gap-10 w-3/4 h-3/4 overflow-hidden" style={{ height: '90vh', overflow: 'auto' }}>
+    <div className="comments-class bg-gray-800 p-4 rounded-lg shadow-md flex flex-col items-center justify-center max-h-screen overflow-hidden" style={{ height: '100vh', overflow: 'auto' }}>
+      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 justify-items-center gap-10 w-3/4 h-3/4 overflow-hidden" style={{ height: '80vh', overflow: 'auto' }}>
         {/* Transcript Entries Container */}
-        <div className="container shadow-lg p-6 cursor-auto  overflow-scroll bg-gray-900 text-white rounded-lg h-3/4 custom-scrollbar">
+        <div className="container shadow-lg p-6 cursor-auto overflow-scroll bg-gray-900 text-white rounded-lg h-3/4 custom-scrollbar">
           {transcriptEntries}
         </div>
   
         {/* Comments and Comment Form Container */}
-        <div className="container shadow-lg p-6 cursor-auto overflow-scroll bg-gray-900 text-white rounded-lg  h-3/4 custom-scrollbar">
-          {showTextarea && (
-            <CommentForm
-              handleSubmit={addComment}
-              spanId={currentWordId as string}
-              spanText={currentWordText}
-              transcriptId={transcriptId}
-              closeTextArea={closeTextArea}
-              initialValue={commentInitialValue}
-            />
-          )}
-  
-          {/* Comments Section */}
-          <div id="commentsContainer" className="mt-4">
-            {loading ? (
-              <p className="text-gray-600 italic">Loading comments...</p> // Show loading indicator
-            ) : backendComments.length > 0 ? (
-              backendComments.map((comment) => (
-                <Comment
-                  key={comment.SpanId}
-                  spanId={comment.SpanId}
-                  commentText={comment.commentText}
-                  spanText={comment.spanText}
-                  onHover={handleWordHover}
-                  onLeave={() => handleWordLeave(comment.SpanId)}
-                  onEdit={handleEdit}
-                  onDelete={deleteComment}
+        <div className="container shadow-lg p-6 cursor-auto overflow-scroll bg-gray-900 text-white rounded-lg h-3/4 custom-scrollbar">
+          {renderFeedback ? (
+            <FeedbackComponent messages={preparedMessages} triggerSummarize={renderFeedback} />
+          ) : (
+            <>
+              {showTextarea && (
+                <CommentForm
+                  handleSubmit={addComment}
+                  spanId={currentWordId as string}
+                  spanText={currentWordText}
+                  transcriptId={transcriptId}
+                  closeTextArea={closeTextArea}
+                  initialValue={commentInitialValue}
                 />
-              ))
-            ) : (
-              <p className="text-gray-500">No comments found</p>
-            )}
-          </div>
+              )}
+  
+              {/* Comments Section */}
+              <div id="commentsContainer" className="mt-4">
+                {loading ? (
+                  <p className="text-gray-600 italic">Loading comments...</p>
+                ) : backendComments.length > 0 ? (
+                  backendComments.map((comment) => (
+                    <Comment
+                      key={comment.SpanId}
+                      spanId={comment.SpanId}
+                      commentText={comment.commentText}
+                      spanText={comment.spanText}
+                      onHover={handleWordHover}
+                      onLeave={() => handleWordLeave(comment.SpanId)}
+                      onEdit={handleEdit}
+                      onDelete={deleteComment}
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-500">No comments found</p>
+                )}
+              </div>
+            </>
+          )}
         </div>
+      </div>
+  
+      {/* Summarize Feedback Button */}
+      <div className="mt-6 w-1/4 flex justify-center" style={{ height: '5vh' }}>
+        <Button 
+          onClick={handleSummarizeFeedback} 
+          className="dark p-4 rounded-lg shadow-md hover:bg-blue-700"
+          style={{ backgroundColor: '#6b46c1' }}
+        >
+          Summarize Feedback
+        </Button>
       </div>
     </div>
   );
+  
   
 }
 

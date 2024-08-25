@@ -48,6 +48,7 @@ export default function Comment({
         </small>
         </div>
         <p className="mb-2">{commentText}</p>
+        
       </div>
       <div className="flex flex-col space-y-2">
         <Button onClick={handleEdit} className="comment-edit-button p-2" isIconOnly>
@@ -57,6 +58,7 @@ export default function Comment({
           <TrashIcon />
         </Button>
       </div>
+      
     </div>
   );
   
