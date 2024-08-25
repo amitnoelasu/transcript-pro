@@ -1,20 +1,9 @@
-
 import { NextRequest, NextResponse } from "next/server";
-import {
-  DynamoDBClient,
-  PutItemCommand,
-  PutItemCommandInput,
-  BatchGetItemCommand,
-  BatchGetItemCommandInput,
-  QueryCommandInput,
-  QueryCommand,
-} from "@aws-sdk/client-dynamodb";
-import transcriptData from "@/app/transcripts.json";
-import { v4 as uuidv4 } from "uuid";
+import { DynamoDBClient, QueryCommandInput, QueryCommand } from "@aws-sdk/client-dynamodb";
 
 export async function POST(req: NextRequest) {
     const data = await req.json();
-    console.log("im here", data)
+    console.log("im here", data);
     const client = new DynamoDBClient({ region: "us-east-1" });
 
     try {
@@ -27,30 +16,28 @@ export async function POST(req: NextRequest) {
           },
           ScanIndexForward: true, // true for ascending order by sort key, false for descending
         };
-    
+
         // Execute the query
         const command = new QueryCommand(params);
         const response = await client.send(command);
-    
+
         // Check if items exist and log them
-        if (response.Items) {
+        if (response.Items && response.Items.length > 0) {
           console.log('Comments:', response.Items);
-          const comments = response.Items.map((item) => {
-            return {
-              TranscriptId: item.TranscriptId.S,
-              SpanId: item.SpanId.S, // Assuming spanId is a number
-              commentText: item.comment.S, // Assuming commentText is the attribute for comment content
-              spanText: item.spanText.S
-            };
-          });
-    
+          const comments = response.Items.map((item) => ({
+            TranscriptId: item.TranscriptId.S,
+            SpanId: item.SpanId.S, // Adjust based on actual data type
+            commentText: item.comment.S, // Adjust based on actual data type
+            spanText: item.spanText.S // Adjust based on actual data type
+          }));
+
           return NextResponse.json(comments); // Return the comments as JSON
         } else {
           console.log('No comments found for the given TranscriptId');
-          return [];
+          return NextResponse.json([]); // Return an empty array as JSON
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Error retrieving comments:', error);
-        throw error;
-      }
+        return NextResponse.error(); // Return a generic error response
+    }
 }
