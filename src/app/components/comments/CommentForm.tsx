@@ -1,12 +1,13 @@
 import { Button, Textarea } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
-
-
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 interface CommentFormProps {
   handleSubmit: (commentText: string, spanId: string, transcriptId: string, spanText: string) => Promise<void>; // Expect handleSubmit as a function
   spanId: string;
   spanText: string;
   transcriptId: string;
+  closeTextArea: () => void;
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({
@@ -14,6 +15,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
   spanId,
   spanText,
   transcriptId,
+  closeTextArea
 }) => {
   {
     const [text, setText] = useState<string>("");
@@ -28,18 +30,34 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
     return (
       <form onSubmit={onSubmit}>
-        <div className="grid sm:grid-cols-10 md:grid-cols-10 lg:grid-cols-10">
+        <div className="flex items-start space-x-2">
           <Textarea
-            className="col-span-9"
+            className="flex-1"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Enter your Comment"
             label={spanText}
             id={spanId}
           />
-          <Button className="comment-form-button" disabled={isTextareaDisabled} type="submit">
-            Write
-          </Button>
+          <div className="flex flex-col space-y-2">
+            <Button 
+              className="comment-form-button p-2" 
+              disabled={isTextareaDisabled} 
+              type="submit"
+              isIconOnly 
+              // style={{padding:4}}
+            >
+              <PaperAirplaneIcon className="text-white"/>
+            </Button>
+            <Button 
+              className="comment-form-button p-2" 
+              onClick={closeTextArea}
+              isIconOnly
+              style={{marginTop:18}}
+            >
+              <XMarkIcon className="text-white"/>
+            </Button>
+          </div>
         </div>
       </form>
     );

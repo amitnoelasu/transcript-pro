@@ -35,6 +35,8 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
           id={formatId(entryIndex, wordIndex)}
           className="inline-block mx-1 hover:bg-sky-700"
           onClick={handleWordClick}
+          // onMouseUp={handleMouseUp}
+          style={{ display: 'inline-flex' }}
         >
           {word}
         </span>
@@ -42,9 +44,12 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
 
       return (
         <div key={entryIndex} className="mb-2">
-          <span className="font-bold">{`[${entry.time}] ${entry.speaker}: `}</span>
-          {words}
-        </div>
+    <div className="bg-gray-700 text-white p-2 rounded-lg mb-1 inline-block">
+      <span className="font-semibold text-lg">{`[${entry.time}]`}</span>
+      <span className="font-semibold text-lg ml-2">{entry.speaker}</span>
+    </div>
+    {words}
+  </div>
       );
     });
 
@@ -63,6 +68,12 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
     setCurrentWordText(clickedWord);
     setCurrentWordId(spanId);
     setShowTextarea(true);
+  }
+
+  function handleMouseUp(e: React.MouseEvent<HTMLSpanElement>) {
+    if (window.getSelection()?.toString()) {
+      handleWordClick(e); 
+    }
   }
 
   const [backendComments, setBackendComments] = useState<BackendComments>([]);
@@ -100,6 +111,9 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
     }
   };
 
+  const closeTextArea = () => {
+    setShowTextarea(false);
+  }
   const getCommentsFromDb = async () => {
     try {
       const response = await fetch("/api/comments/getComments", {
@@ -155,14 +169,14 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
   const handleWordHover = (spanId: string) => {
     const element = document.getElementById(spanId);
     if (element) {
-      element.classList.add('bg-green-300');
+      element.style.backgroundColor = '#6b46c1'; 
     }
   };
-
+  
   const handleWordLeave = (spanId: string) => {
     const element = document.getElementById(spanId);
     if (element) {
-      element.classList.remove('bg-green-300');
+      element.style.backgroundColor = ''; 
     }
   };
 
@@ -185,23 +199,29 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
 
 
   return (
-    <div className="comments-class">
-      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 justify-items-center gap-10">
-        <div className="container shadow p-10 cursor-auto w-full overflow-auto">
+    <div className="comments-class bg-gray-800 p-4 rounded-lg shadow-md flex items-center justify-center max-h-screen overflow-hidden" style={{ height: '100vh', overflow: 'auto' }}>
+      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 justify-items-center gap-10 w-3/4 h-3/4 overflow-hidden" style={{ height: '90vh', overflow: 'auto' }}>
+        {/* Transcript Entries Container */}
+        <div className="container shadow-lg p-6 cursor-auto  overflow-scroll bg-gray-900 text-white rounded-lg h-3/4 custom-scrollbar">
           {transcriptEntries}
         </div>
-        <div className="container shadow p-10 cursor-auto w-full overflow-auto">
+  
+        {/* Comments and Comment Form Container */}
+        <div className="container shadow-lg p-6 cursor-auto overflow-scroll bg-gray-900 text-white rounded-lg  h-3/4 custom-scrollbar">
           {showTextarea && (
             <CommentForm
               handleSubmit={addComment}
               spanId={currentWordId as string}
               spanText={currentWordText}
               transcriptId={transcriptId}
+              closeTextArea={closeTextArea}
             />
           )}
-          <div id="commentsContainer">
+  
+          {/* Comments Section */}
+          <div id="commentsContainer" className="mt-4">
             {loading ? (
-              <p>Loading comments...</p> // Show loading indicator
+              <p className="text-gray-600 italic">Loading comments...</p> // Show loading indicator
             ) : backendComments.length > 0 ? (
               backendComments.map((comment) => (
                 <Comment
@@ -214,13 +234,14 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
                 />
               ))
             ) : (
-              <p>No comments found</p>
+              <p className="text-gray-500">No comments found</p>
             )}
           </div>
         </div>
       </div>
     </div>
   );
-};
+  
+}
 
 export default Comments;
