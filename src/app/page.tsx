@@ -4,7 +4,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import Comments from "./components/comments/Comments";
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'; // Import useRouter for navigation
+import { useRouter } from 'next/navigation'; 
 // import { Grid } from '@nextui-org/react';
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
 
   async function fetchTranscripts() {
     try {
-      const response = await fetch("/api/transcripts"); // Adjust the path as needed
+      const response = await fetch("/api/transcripts"); 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }

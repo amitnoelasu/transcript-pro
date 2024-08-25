@@ -17,17 +17,61 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
   const [currentWordText, setCurrentWordText] = useState<string>("");
   const [currentWordId, setCurrentWordId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
+ 
   function formatId(entryIndex: number, wordIndex: number): string {
     const paddedEntryIndex = entryIndex.toString().padStart(4, "0");
     const paddedWordIndex = wordIndex.toString().padStart(4, "0");
     return `${paddedEntryIndex}#${paddedWordIndex}`;
   }
 
-  function loadTranscript() {
-    const data: Transcript = transcriptData;
-    const transcript = data.transcript;
+  async function fetchTranscriptJson() {
+    try {
+      const response = await fetch("/api/fetchTranscriptJson", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          TranscriptId: transcriptId,
+        }),
+      });
+      if (response.ok) {
+        // Re-fetch comments after successfully adding a new one
+        // console.log(JSON.stringify(response)) 
+        const data = await response.json();
 
+        const transcriptEntriesTemp: TranscriptEntry[] = data.transcriptJson.map((item: any) => {
+          return {
+            time: item.M.time.S,
+            speaker: item.M.speaker.S,
+            text: item.M.text.S,
+          };
+        });
+        
+        // Update state with the transformed data
+        setTranscript(transcriptEntriesTemp);
+        // console.log("transcript ---- ", transcriptEntriesTemp);
+  
+        // setTranscript(data.transcriptJson);
+        // console.log("transcript ---- ", transcript)
+      } else {
+        console.error("Failed to load");
+      }
+    } catch (error) {
+      console.error("Error loading", error);
+    }
+  }
+
+  
+  
+
+  useEffect(() => {
+    fetchTranscriptJson();
+  }, [transcriptId]);
+  
+  function loadTranscript() {
+    // console.log("transcript", JSON.stringify(transcript));
+  
     const entries = transcript.map((entry, entryIndex) => {
       const words = entry.text.split(" ").map((word, wordIndex) => (
         <span
@@ -58,7 +102,7 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
 
   useEffect(() => {
     loadTranscript();
-  }, []);
+  }, [transcript]);
 
   function handleWordClick(e: React.MouseEvent<HTMLSpanElement>) {
     console.log("Clicked word:", e.currentTarget.textContent);
