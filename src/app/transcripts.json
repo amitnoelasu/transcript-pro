@@ -1,0 +1,150 @@
+{
+    "transcript": [
+      {
+        "speaker": "Salesperson",
+        "time": "00:00",
+        "text": "Good afternoon, Mr. Smith! I’m Sarah, your real estate agent. How are you today?"
+      },
+      {
+        "speaker": "Customer",
+        "time": "00:05",
+        "text": "Hi Sarah, I’m doing well, thank you. Excited to see the house!"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "00:10",
+        "text": "Great! Let’s start with the living room. As you can see, it’s very spacious and gets a lot of natural light from the large windows. It’s perfect for family gatherings or entertaining guests."
+      },
+      {
+        "speaker": "Customer",
+        "time": "00:20",
+        "text": "It does look bright and airy. What’s the square footage here?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "00:25",
+        "text": "The living room alone is about 350 square feet, and the entire house is just under 2,500 square feet."
+      },
+      {
+        "speaker": "Customer",
+        "time": "00:30",
+        "text": "Nice. And what about the flooring? Is this hardwood?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "00:35",
+        "text": "Yes, you’re right. The living room, along with the dining area, has beautiful oak hardwood flooring. It’s not only durable but also adds a warm touch to the interior."
+      },
+      {
+        "speaker": "Customer",
+        "time": "00:45",
+        "text": "I like that. How old is this house, by the way?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "00:50",
+        "text": "It was built in 2010, so it’s relatively new and has been very well-maintained by the previous owners. They actually did some recent renovations to the kitchen, which I think you’ll love. Shall we take a look?"
+      },
+      {
+        "speaker": "Customer",
+        "time": "01:00",
+        "text": "Sure, lead the way."
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "01:05",
+        "text": "Here we are. As you can see, the kitchen features modern stainless steel appliances, quartz countertops, and a large island with a breakfast bar. It’s a great space for cooking and socializing."
+      },
+      {
+        "speaker": "Customer",
+        "time": "01:20",
+        "text": "I love the island. It’s perfect for morning coffee. How about storage space?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "01:25",
+        "text": "Good question. There’s plenty of storage with these custom cabinets, and there's also a pantry closet just over there. You won’t run out of space for kitchen essentials."
+      },
+      {
+        "speaker": "Customer",
+        "time": "01:35",
+        "text": "That’s a plus. What about the bedrooms? Are they spacious?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "01:40",
+        "text": "Yes, absolutely. The master bedroom is quite large and features a walk-in closet and an ensuite bathroom. Let’s go upstairs and take a look."
+      },
+      {
+        "speaker": "Customer",
+        "time": "01:50",
+        "text": "Okay, I’m curious to see it."
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "01:55",
+        "text": "Here we are. As you can see, the master bedroom offers a lot of space. It also has these large windows that let in plenty of light, making the room feel even bigger. The ensuite bathroom comes with a dual vanity, a soaking tub, and a separate shower."
+      },
+      {
+        "speaker": "Customer",
+        "time": "02:10",
+        "text": "This is really nice. I can see myself relaxing here. How many bedrooms are there in total?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "02:15",
+        "text": "There are four bedrooms, including the master. Each room is spacious and can comfortably fit a queen-sized bed, making it ideal for a growing family or guests."
+      },
+      {
+        "speaker": "Customer",
+        "time": "02:25",
+        "text": "Sounds good. And how about the backyard? I’d love to see that too."
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "02:30",
+        "text": "Of course, follow me. The backyard is one of the highlights of this property. It’s fully fenced for privacy, has a nice patio area for barbecues, and there’s plenty of green space for kids to play or to start a garden."
+      },
+      {
+        "speaker": "Customer",
+        "time": "02:45",
+        "text": "This is perfect. I can imagine having friends over for a cookout here."
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "02:50",
+        "text": "Exactly! It’s a great spot for entertaining. And there’s even room for a small pool if that’s something you’d consider in the future."
+      },
+      {
+        "speaker": "Customer",
+        "time": "02:55",
+        "text": "Interesting! I’ll keep that in mind. What’s the asking price again?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "03:00",
+        "text": "The asking price is $550,000. Given the size of the property and the features it offers, it’s quite a competitive price in this neighborhood."
+      },
+      {
+        "speaker": "Customer",
+        "time": "03:10",
+        "text": "That seems reasonable. I’ll have to discuss it with my spouse, but I’m definitely interested. What are the next steps if we decide to make an offer?"
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "03:15",
+        "text": "If you decide to proceed, I can help you with the paperwork to make an offer. We’d also discuss any contingencies you might want to include. Once the offer is accepted, we can schedule a home inspection and move forward from there."
+      },
+      {
+        "speaker": "Customer",
+        "time": "03:25",
+        "text": "Sounds good. I appreciate your time, Sarah. This has been very helpful."
+      },
+      {
+        "speaker": "Salesperson",
+        "time": "03:30",
+        "text": "You’re welcome, Mr. Smith. I’m here to help with any questions you might have. Just give me a call anytime!"
+      }
+    ]
+  }
+  
