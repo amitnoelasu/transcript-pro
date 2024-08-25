@@ -8,6 +8,7 @@ interface CommentFormProps {
   spanText: string;
   transcriptId: string;
   closeTextArea: () => void;
+  initialValue: string;
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({
@@ -15,10 +16,11 @@ const CommentForm: React.FC<CommentFormProps> = ({
   spanId,
   spanText,
   transcriptId,
-  closeTextArea
+  closeTextArea,
+  initialValue = ""
 }) => {
   {
-    const [text, setText] = useState<string>("");
+    const [text, setText] = useState<string>(initialValue);
     const isTextareaDisabled = text.length === 0;
 
     const onSubmit = (event: FormEvent) => {
@@ -30,7 +32,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
     return (
       <form onSubmit={onSubmit}>
-        <div className="flex items-start space-x-2">
+        <div className="dark flex items-start space-x-2">
           <Textarea
             className="flex-1"
             value={text}

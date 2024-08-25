@@ -10,7 +10,7 @@ import transcriptData from "../../transcripts.json";
 
 
 export const Comments = ({ transcriptId }: { transcriptId: string }) => {
-  
+    console.log("trancsriptId", transcriptId)
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([]);
   const [transcriptEntries, setTranscriptEntries] = useState<JSX.Element[]>([]);
   const [showTextarea, setShowTextarea] = useState<boolean>(false);
@@ -102,6 +102,7 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
       if (response.ok) {
         // Re-fetch comments after successfully adding a new one
         setShowTextarea(false);
+        setCommentInitialValue("");
         await getCommentsFromDb();
       } else {
         console.error("Failed to add comment");
@@ -136,31 +137,20 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
     }
   };
 
-  const updateComment = async (updatedComment: string, commentId: string) => {
-    const response = await fetch("/api/comments", {
-      method: "UPDATE",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        updatedComment: updatedComment,
-        commendId: commentId,
-      }),
-    });
-  };
+  // const updateComment = async (updatedComment: string, commentId: string) => {
+  //   const response = await fetch("/api/comments", {
+  //     method: "UPDATE",
+  //     headers: {
+  //       "Content-type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       updatedComment: updatedComment,
+  //       commendId: commentId,
+  //     }),
+  //   });
+  // };
 
-  const deleteComment = async (commentId: string) => {
-    if (window.confirm("Are you sure you want to remove comment?")) {
-      const response = await fetch("/api/comments", {
-        method: "UPDATE",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ commendId: commentId }),
-      });
-    }
-  };
-
+  
   useEffect(() => {
     getCommentsFromDb();
   }, []);
@@ -196,6 +186,34 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
     ));
   };
 
+  const [formData, setFormData] = useState<{ commentText: string, spanId: string }>({ commentText: '', spanId: '' });
+
+  const [isFormVisible, setFormVisible] = useState(false);
+  const [commentInitialValue, setCommentInitialValue] = useState<string>("");
+  const handleEdit = (commentText: string, spanText: string, spanId: string) => {
+    setCurrentWordText(spanText);
+    setCurrentWordId(spanId);
+    setCommentInitialValue(commentText);
+    setShowTextarea(true); // Show the CommentForm
+  };
+
+  const deleteComment = async (commentText: string, spanText: string, spanId: string) => {
+    if (window.confirm("Are you sure you want to remove comment?")) {
+      const response = await fetch("/api/comments/deleteComment", {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ TranscriptId: transcriptId, SpanId: spanId }),
+      });
+
+      if(response.ok) {
+        await getCommentsFromDb();
+        handleWordLeave(spanId);
+      }
+    }
+  };
+
 
 
   return (
@@ -215,6 +233,7 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
               spanText={currentWordText}
               transcriptId={transcriptId}
               closeTextArea={closeTextArea}
+              initialValue={commentInitialValue}
             />
           )}
   
@@ -231,6 +250,8 @@ export const Comments = ({ transcriptId }: { transcriptId: string }) => {
                   spanText={comment.spanText}
                   onHover={handleWordHover}
                   onLeave={() => handleWordLeave(comment.SpanId)}
+                  onEdit={handleEdit}
+                  onDelete={deleteComment}
                 />
               ))
             ) : (

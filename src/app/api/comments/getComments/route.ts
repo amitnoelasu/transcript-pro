@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function POST(req: NextRequest) {
     const data = await req.json();
-    // console.log("im here", data)
+    console.log("im here", data)
     const client = new DynamoDBClient({ region: "us-east-1" });
 
     try {
