@@ -27,8 +27,7 @@ To run this project locally, follow these steps:
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/your-username/transcript-annotation-service.git
-    cd transcript-annotation-service
+    git clone https://github.com/amitnoelasu/transcript-pro.git
     ```
 
 2. **Install Dependencies:**
